@@ -16,11 +16,10 @@ class Server {
         });
         this.setupMiddlewares(middlewares, false);
         this.server.use((req, res, next) => {
-            console.log('oisfiosdf');
             next();
         });
     }
-    start(port = 5000) {
+    start(port = '5000') {
         this.server.listen(port, () => {
             console.log(`service starting on http://localhost:${port}`);
         });
