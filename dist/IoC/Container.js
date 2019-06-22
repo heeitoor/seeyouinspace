@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const inversify_1 = require("inversify");
+const Routers_1 = require("./Binders/Routers");
+const Controllers_1 = require("./Binders/Controllers");
+const Integrations_1 = require("./Binders/Integrations");
+const Datas_1 = require("./Binders/Datas");
+const container = new inversify_1.Container();
+exports.container = container;
+Routers_1.bind(container);
+Controllers_1.bind(container);
+Integrations_1.bind(container);
+Datas_1.bind(container);
