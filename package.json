@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "tsc && mocha ./dist/tests",
-    "start": "tsc && node ./dist/Index.js"
+    "start": "node ./dist/Index.js",
+    "dev": "tsc && node ./dist/Index.js"
   },
   "repository": {
     "type": "git",
