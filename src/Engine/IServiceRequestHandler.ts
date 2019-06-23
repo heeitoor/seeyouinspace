@@ -1,4 +1,4 @@
-import { NextFunction, Response, Request, RequestHandler } from 'express';
+import { NextFunction, Response, Request } from 'express';
 import { MiddlewareOrder } from './Utils/Enums';
 
 export default interface IServiceRequestHandler {

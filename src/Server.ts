@@ -1,14 +1,10 @@
-import express, {
-  Router,
-  RequestHandler,
-  Request,
-  Response,
-  NextFunction,
-} from 'express';
+import express from 'express';
+import bodyParser from 'body-parser';
 import IServiceRouter from './Engine/IServiceRouter';
 import IServiceRequestHandler from './Engine/IServiceRequestHandler';
 import { MiddlewareOrder } from './Engine/Utils/Enums';
-import bodyParser from 'body-parser';
+import ErrorBase from './Engine/Utils/ErrorBase';
+import { Response } from 'express-serve-static-core';
 
 export default class Server {
   private server: express.Application;
@@ -21,7 +17,7 @@ export default class Server {
 
     this.server.use(bodyParser.json());
 
-    this.setupMiddlewares(middlewares, true);
+    this.setupMiddlewares(middlewares);
 
     routers.forEach((router) => {
       this.server.use(router.path, router.register());
@@ -29,7 +25,18 @@ export default class Server {
 
     this.setupMiddlewares(middlewares, false);
 
-    this.server.use((req, res, next) => {
+    // middleware de erros
+    this.server.use((err, req, res: Response, next) => {
+      if (err instanceof ErrorBase) {
+        let { code, message } = err as ErrorBase;
+        code = code ? code : 400;
+        res.status(code).send({
+          message,
+        });
+      } else {
+        res.status(500).send('Internal error.');
+      }
+
       next();
     });
   }
@@ -44,8 +51,10 @@ export default class Server {
     middlewares: IServiceRequestHandler[],
     begining: boolean = true,
   ) {
-    const beginMiddlewares: IServiceRequestHandler[] = middlewares.filter(
-      (x) => begining && x.order === MiddlewareOrder.Begin,
+    const beginMiddlewares: IServiceRequestHandler[] = middlewares.filter((x) =>
+      begining
+        ? x.order === MiddlewareOrder.Begin
+        : x.order === MiddlewareOrder.End,
     );
 
     beginMiddlewares.forEach((middleware) => {

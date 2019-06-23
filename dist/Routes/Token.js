@@ -23,27 +23,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const Token_1 = __importDefault(require("./Schemas/Token"));
 const inversify_1 = require("inversify");
-const Redis_1 = __importDefault(require("../Data/Redis"));
+const Token_2 = __importDefault(require("../Controllers/Token"));
 const Types_1 = require("../IoC/Types");
-let RedisIntegration = class RedisIntegration {
-    constructor(redis) {
-        this.redis = redis;
+let TokenRouter = class TokenRouter {
+    constructor(controller) {
+        this.controller = controller;
+        this.path = '/token';
     }
-    set(key, value) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.redis.set(key, value);
-        });
-    }
-    get(key) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.redis.get(key);
-        });
+    register() {
+        const router = express_1.default.Router();
+        router
+            .post('/', Token_1.default.post, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                res.send(yield this.controller.post(req));
+            }
+            catch (error) {
+                next(error);
+                return;
+            }
+            next();
+        }))
+            .delete('/', (req, res, next) => __awaiter(this, void 0, void 0, function* () { }));
+        return router;
     }
 };
-RedisIntegration = __decorate([
+TokenRouter = __decorate([
     inversify_1.injectable(),
-    __param(0, inversify_1.inject(Types_1.types.RedisData)),
-    __metadata("design:paramtypes", [Redis_1.default])
-], RedisIntegration);
-exports.default = RedisIntegration;
+    __param(0, inversify_1.inject(Types_1.types.TokenController)),
+    __metadata("design:paramtypes", [Token_2.default])
+], TokenRouter);
+exports.default = TokenRouter;

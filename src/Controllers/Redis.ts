@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import IResult from '../Engine/IResult';
 import { injectable, inject } from 'inversify';
+import IResult from '../Engine/IResult';
 import IRedisController from './Abstractions/IRedis';
 import { types } from '../IoC/Types';
 import RedisIntegration from '../Integrations/Redis';
@@ -17,21 +17,21 @@ export default class RedisController implements IRedisController {
     return await this.redisIntegration.get(key);
   }
 
-  async post(request: Request) {
+  async post(request: Request): Promise<IResult> {
     const { key, value } = request.body;
 
     return await this.redisIntegration.set(key, value);
   }
 
-  put(request: Request) {
+  put(request: Request): Promise<IResult> {
     throw new Error('Method not implemented.');
   }
 
-  patch(request: Request) {
+  patch(request: Request): Promise<IResult> {
     throw new Error('Method not implemented.');
   }
 
-  delete(request: Request) {
+  delete(request: Request): Promise<IResult> {
     throw new Error('Method not implemented.');
   }
 }

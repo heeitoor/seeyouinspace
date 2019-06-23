@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import RedisController from '../Controllers/Redis';
 import { inject, injectable } from 'inversify';
+import RedisController from '../Controllers/Redis';
 import { types } from '../IoC/Types';
 import IRedisRouter from './Abstractions/IRedis';
+import RedisSchema from './Schemas/Redis';
 
 @injectable()
 export default class RedisRouter implements IRedisRouter {
@@ -22,11 +23,11 @@ export default class RedisRouter implements IRedisRouter {
     // });
 
     router
-      .get('/:key', async (req, res, next) => {
+      .get('/:key', RedisSchema.get, async (req, res, next) => {
         res.send(await this.controller.get(req));
         next();
       })
-      .post('/', async (req, res, next) => {
+      .post('/', RedisSchema.post, async (req, res, next) => {
         res.send(await this.controller.post(req));
         next();
       });

@@ -1,5 +1,6 @@
 const routers = {
-  RedisRouter: Symbol.for('IServiceRouter'),
+  RedisRouter: Symbol.for('IRedisRouter'),
+  TokenRouter: Symbol.for('ITokenRouter'),
 };
 
 export { routers };

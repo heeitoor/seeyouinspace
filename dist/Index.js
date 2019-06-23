@@ -9,5 +9,7 @@ const Types_1 = require("./IoC/Types");
 const Server_1 = __importDefault(require("./Server"));
 const Auth_1 = __importDefault(require("./Middlewares/Auth"));
 const Enums_1 = require("./Engine/Utils/Enums");
-require('dotenv').config();
-new Server_1.default([Container_1.container.get(Types_1.types.RedisRouter)], [new Auth_1.default(Enums_1.MiddlewareOrder.Begin)]).start(process.env.PORT);
+new Server_1.default([
+    Container_1.container.get(Types_1.types.RedisRouter),
+    Container_1.container.get(Types_1.types.TokenRouter),
+], [new Auth_1.default(Enums_1.MiddlewareOrder.Begin)]).start(process.env.PORT);

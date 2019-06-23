@@ -24,9 +24,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const Redis_1 = __importDefault(require("../Controllers/Redis"));
 const inversify_1 = require("inversify");
+const Redis_1 = __importDefault(require("../Controllers/Redis"));
 const Types_1 = require("../IoC/Types");
+const Redis_2 = __importDefault(require("./Schemas/Redis"));
 let RedisRouter = class RedisRouter {
     constructor(controller) {
         this.controller = controller;
@@ -40,11 +41,11 @@ let RedisRouter = class RedisRouter {
         //   next();
         // });
         router
-            .get('/:key', (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            .get('/:key', Redis_2.default.get, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             res.send(yield this.controller.get(req));
             next();
         }))
-            .post('/', (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            .post('/', Redis_2.default.post, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             res.send(yield this.controller.post(req));
             next();
         }));
