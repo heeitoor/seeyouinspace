@@ -11,37 +11,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const joi_1 = __importDefault(require("@hapi/joi"));
 const SchemaBase_1 = __importDefault(require("../../Engine/Utils/SchemaBase"));
-class RedisSchema extends SchemaBase_1.default {
-    static get(request, response, next) {
-        const _super = Object.create(null, {
-            validate: { get: () => super.validate }
-        });
-        return __awaiter(this, void 0, void 0, function* () {
-            const schema = joi_1.default.object().keys(RedisSchema.baseObj);
-            _super.validate.call(this, schema, request.params, response, next);
-        });
-    }
+const joi_1 = __importDefault(require("@hapi/joi"));
+class RabbitMQSchema extends SchemaBase_1.default {
     static post(request, response, next) {
         const _super = Object.create(null, {
             validate: { get: () => super.validate }
         });
         return __awaiter(this, void 0, void 0, function* () {
-            const schema = joi_1.default.object().keys(Object.assign({}, RedisSchema.baseObj, { value: joi_1.default
-                    .string()
-                    .min(3)
-                    .disallow('')
-                    .required() }));
+            const schema = joi_1.default.object().keys({
+                data: joi_1.default
+                    .alternatives(joi_1.default.string().min(3), joi_1.default.object().min(1))
+                    .required(),
+            });
             _super.validate.call(this, schema, request.body, response, next);
         });
     }
 }
-RedisSchema.baseObj = {
-    key: joi_1.default
-        .string()
-        .min(3)
-        .disallow('')
-        .required(),
-};
-exports.default = RedisSchema;
+exports.default = RabbitMQSchema;

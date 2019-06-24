@@ -6,6 +6,7 @@ import Server from './Server';
 import AuthMiddleware from './Middlewares/Auth';
 import { MiddlewareOrder } from './Engine/Utils/Enums';
 import TokenRouter from './Routes/Token';
+import RabbitMQRouter from './Routes/RabbitMQ';
 
 // import cron from 'cron';
 // import moment from 'moment';
@@ -19,8 +20,9 @@ import TokenRouter from './Routes/Token';
 
 new Server(
   [
-    container.get<RedisRouter>(types.RedisRouter),
+    //container.get<RedisRouter>(types.RedisRouter),
     container.get<TokenRouter>(types.TokenRouter),
+    container.get<RabbitMQRouter>(types.RabbitMQRouter),
   ],
-  [new AuthMiddleware(MiddlewareOrder.Begin)],
+  [/*new AuthMiddleware(MiddlewareOrder.Begin)*/],
 ).start(process.env.PORT);

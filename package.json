@@ -20,6 +20,7 @@
   "homepage": "https://github.com/heeitoor/seeyouinspace#readme",
   "dependencies": {
     "@hapi/joi": "^15.1.0",
+    "@sendgrid/client": "^6.4.0",
     "@types/amqp": "^0.2.4",
     "@types/amqplib": "^0.5.12",
     "@types/body-parser": "^1.17.0",

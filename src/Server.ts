@@ -1,10 +1,9 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import IServiceRouter from './Engine/IServiceRouter';
 import IServiceRequestHandler from './Engine/IServiceRequestHandler';
 import { MiddlewareOrder } from './Engine/Utils/Enums';
-import ErrorBase from './Engine/Utils/ErrorBase';
-import { Response } from 'express-serve-static-core';
+import ErrorMiddleware from './Middlewares/Error';
+import GlobalMiddleware from './Middlewares/Global';
 
 export default class Server {
   private server: express.Application;
@@ -15,35 +14,33 @@ export default class Server {
   ) {
     this.server = express();
 
-    this.server.use(bodyParser.json());
-
-    this.setupMiddlewares(middlewares);
-
-    routers.forEach((router) => {
-      this.server.use(router.path, router.register());
-    });
-
-    this.setupMiddlewares(middlewares, false);
-
-    // middleware de erros
-    this.server.use((err, req, res: Response, next) => {
-      if (err instanceof ErrorBase) {
-        let { code, message } = err as ErrorBase;
-        code = code ? code : 400;
-        res.status(code).send({
-          message,
-        });
-      } else {
-        res.status(500).send('Internal error.');
-      }
-
-      next();
-    });
+    this.setup(routers, middlewares);
   }
 
   start(port: string = '5000') {
     this.server.listen(port, () => {
       console.log(`service starting on http://localhost:${port}`);
+    });
+  }
+
+  private setup(
+    routers: IServiceRouter[],
+    middlewares: IServiceRequestHandler[],
+  ) {
+    GlobalMiddleware.register(this.server);
+
+    this.setupMiddlewares(middlewares);
+
+    this.setupRouters(routers);
+
+    this.setupMiddlewares(middlewares, false);
+
+    this.server.use(ErrorMiddleware.handler);
+  }
+
+  private setupRouters(routers: IServiceRouter[]) {
+    routers.forEach((router) => {
+      this.server.use(router.path, router.register());
     });
   }
 

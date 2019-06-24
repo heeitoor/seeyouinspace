@@ -6,8 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Types_1 = require("../Types");
 const Redis_1 = __importDefault(require("../../Controllers/Redis"));
 const Token_1 = __importDefault(require("../../Controllers/Token"));
+const RabbitMQ_1 = __importDefault(require("../../Controllers/RabbitMQ"));
 const bind = (container) => {
     container.bind(Types_1.types.RedisController).to(Redis_1.default);
     container.bind(Types_1.types.TokenController).to(Token_1.default);
+    container.bind(Types_1.types.RabbitMQController).to(RabbitMQ_1.default);
 };
 exports.bind = bind;
