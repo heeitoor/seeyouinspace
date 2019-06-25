@@ -18,19 +18,15 @@ export default class RabbitMQRouter implements IRabbitMQRouter {
     const router = Router();
 
     router
-      .post(
-        '/',
-        RabbitMQSchema.post,
-        async (req: Request, res: Response, next: NextFunction) => {
-          try {
-            res.send(await this.controller.post(req));
-          } catch (error) {
-            next(error);
-            return;
-          }
-          next();
-        },
-      )
+      .post('/', RabbitMQSchema.post, async (req, res, next) => {
+        try {
+          res.send(await this.controller.post(req));
+        } catch (error) {
+          next(error);
+          return;
+        }
+        next();
+      })
       .get('/', async (req: Request, res: Response) => {
         res.send(await this.controller.get(req));
       });
