@@ -15,25 +15,21 @@ const joi_1 = __importDefault(require("@hapi/joi"));
 const SchemaBase_1 = __importDefault(require("../../Engine/Utils/SchemaBase"));
 class RedisSchema extends SchemaBase_1.default {
     static get(request, response, next) {
-        const _super = Object.create(null, {
-            validate: { get: () => super.validate }
-        });
+        const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
             const schema = joi_1.default.object().keys(RedisSchema.baseObj);
-            _super.validate.call(this, schema, request.params, response, next);
+            _super("validate").call(this, schema, request.params, response, next);
         });
     }
     static post(request, response, next) {
-        const _super = Object.create(null, {
-            validate: { get: () => super.validate }
-        });
+        const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
             const schema = joi_1.default.object().keys(Object.assign({}, RedisSchema.baseObj, { value: joi_1.default
                     .string()
                     .min(3)
                     .disallow('')
                     .required() }));
-            _super.validate.call(this, schema, request.body, response, next);
+            _super("validate").call(this, schema, request.body, response, next);
         });
     }
 }

@@ -1,9 +1,10 @@
 import IRabbitMQRouter from './Abstractions/IRabbitMQ';
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import RabbitMQSchema from './Schemas/RabbitMQ';
 import { inject, injectable } from 'inversify';
 import { types } from '../IoC/Types';
 import RabbitMQController from '../Controllers/RabbitMQ';
+import { runInNewContext } from 'vm';
 
 @injectable()
 export default class RabbitMQRouter implements IRabbitMQRouter {
@@ -17,10 +18,22 @@ export default class RabbitMQRouter implements IRabbitMQRouter {
     const router = Router();
 
     router
-      .post('/', RabbitMQSchema.post, async (req: Request, res: Response) => {
-        res.send(await this.controller.post(req));
-      })
-      .get('/', async (req: Request, res: Response) => {});
+      .post(
+        '/',
+        RabbitMQSchema.post,
+        async (req: Request, res: Response, next: NextFunction) => {
+          try {
+            res.send(await this.controller.post(req));
+          } catch (error) {
+            next(error);
+            return;
+          }
+          next();
+        },
+      )
+      .get('/', async (req: Request, res: Response) => {
+        res.send(await this.controller.get(req));
+      });
 
     return router;
   }

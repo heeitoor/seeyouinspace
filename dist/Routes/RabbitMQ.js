@@ -36,10 +36,19 @@ let RabbitMQRouter = class RabbitMQRouter {
     register() {
         const router = express_1.Router();
         router
-            .post('/', RabbitMQ_1.default.post, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            res.send(yield this.controller.post(req));
+            .post('/', RabbitMQ_1.default.post, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                res.send(yield this.controller.post(req));
+            }
+            catch (error) {
+                next(error);
+                return;
+            }
+            next();
         }))
-            .get('/', (req, res) => __awaiter(this, void 0, void 0, function* () { }));
+            .get('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            res.send(yield this.controller.get(req));
+        }));
         return router;
     }
 };

@@ -16,11 +16,43 @@ let RabbitMQIntegration = class RabbitMQIntegration {
     publish(data) {
         amqplib_1.default.connect(Config_1.config.env.CLOUDAMQP_URL).then((connection) => {
             connection.createChannel().then((channel) => {
+                channel.assertQueue('queue', { durable: false });
+                channel.sendToQueue('queue', Buffer.from(JSON.stringify(data)));
             });
         });
     }
     consume() {
-        throw new Error('Method not implemented.');
+        return new Promise((resolve, reject) => {
+            amqplib_1.default.connect(Config_1.config.env.CLOUDAMQP_URL).then((connection) => {
+                connection.createChannel().then((channel) => {
+                    channel.assertQueue('queue', { durable: false }).then(() => {
+                        //channel.prefetch(1);
+                        channel
+                            .get('queue', {
+                            noAck: true,
+                        })
+                            .then((message) => {
+                            resolve({
+                                ok: true,
+                                data: JSON.parse(message.content.toString('utf8')),
+                            });
+                        });
+                        // channel.consume(
+                        //   'queue',
+                        //   (message) => {
+                        //     resolve({
+                        //       ok: true,
+                        //       data: JSON.parse(message.content.toString('utf8')),
+                        //     });
+                        //   },
+                        //   {
+                        //     noAck: true,
+                        //   },
+                        // );
+                    });
+                });
+            });
+        });
     }
 };
 RabbitMQIntegration = __decorate([

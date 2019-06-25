@@ -23,7 +23,7 @@ let RabbitMQController = class RabbitMQController {
         this.integration = integration;
     }
     get(request) {
-        throw new Error('Method not implemented.');
+        return this.integration.consume();
     }
     post(request) {
         this.integration.publish(request.body);

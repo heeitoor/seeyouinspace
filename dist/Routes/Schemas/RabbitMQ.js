@@ -15,16 +15,14 @@ const SchemaBase_1 = __importDefault(require("../../Engine/Utils/SchemaBase"));
 const joi_1 = __importDefault(require("@hapi/joi"));
 class RabbitMQSchema extends SchemaBase_1.default {
     static post(request, response, next) {
-        const _super = Object.create(null, {
-            validate: { get: () => super.validate }
-        });
+        const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
             const schema = joi_1.default.object().keys({
                 data: joi_1.default
                     .alternatives(joi_1.default.string().min(3), joi_1.default.object().min(1))
                     .required(),
             });
-            _super.validate.call(this, schema, request.body, response, next);
+            _super("validate").call(this, schema, request.body, response, next);
         });
     }
 }

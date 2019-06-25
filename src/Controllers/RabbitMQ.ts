@@ -14,7 +14,7 @@ export default class RabbitMQController implements IRabbitMQController {
   get(
     request: import('express').Request,
   ): Promise<import('../Engine/IResult').default> {
-    throw new Error('Method not implemented.');
+      return this.integration.consume();
   }
 
   post(request: Request): Promise<IResult> {
