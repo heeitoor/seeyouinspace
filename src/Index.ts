@@ -10,28 +10,36 @@ import RabbitMQRouter from './Routes/RabbitMQ';
 import elasticsearch from 'elasticsearch';
 import { config } from './Config';
 
-const client = new elasticsearch.Client({
-  host: config.env.SEARCHBOX_URL,
-});
+new Server(
+  [
+    container.get<TokenRouter>(types.TokenRouter),
+    container.get<RedisRouter>(types.RedisRouter),
+    container.get<RabbitMQRouter>(types.RabbitMQRouter),
+  ],
+  [new AuthMiddleware(MiddlewareOrder.Begin)],
+).start(process.env.PORT);
+// const client = new elasticsearch.Client({
+//   host: config.env.SEARCHBOX_URL,
+// });
 
-client
-  .search({
-    index: 'teste',
-    type: 'document',
-    body: {
-      query: {
-        query_string: {
-          query: 'lsi',
-        },
-      },
-    },
-  })
-  .then((x) => {
-    console.log(x.hits);
-  })
-  .catch((x) => {
-    console.log('err', x);
-  });
+// client
+//   .search({
+//     index: 'teste',
+//     type: 'document',
+//     body: {
+//       query: {
+//         query_string: {
+//           query: 'lsi',
+//         },
+//       },
+//     },
+//   })
+//   .then((x) => {
+//     console.log(x.hits);
+//   })
+//   .catch((x) => {
+//     console.log('err', x);
+//   });
 
 // client.index(
 //   {
@@ -59,12 +67,3 @@ client
 // });
 
 // cronJob.start();
-
-// new Server(
-//   [
-//     //container.get<RedisRouter>(types.RedisRouter),
-//     container.get<TokenRouter>(types.TokenRouter),
-//     container.get<RabbitMQRouter>(types.RabbitMQRouter),
-//   ],
-//   [/*new AuthMiddleware(MiddlewareOrder.Begin)*/],
-// ).start(process.env.PORT);

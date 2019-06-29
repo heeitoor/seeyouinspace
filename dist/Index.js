@@ -4,29 +4,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const elasticsearch_1 = __importDefault(require("elasticsearch"));
-const Config_1 = require("./Config");
-const client = new elasticsearch_1.default.Client({
-    host: Config_1.config.env.SEARCHBOX_URL,
-});
-client
-    .search({
-    index: 'teste',
-    type: 'document',
-    body: {
-        query: {
-            query_string: {
-                query: 'lsi',
-            },
-        },
-    },
-})
-    .then((x) => {
-    console.log(x.hits);
-})
-    .catch((x) => {
-    console.log('err', x);
-});
+const Container_1 = require("./IoC/Container");
+const Types_1 = require("./IoC/Types");
+const Server_1 = __importDefault(require("./Server"));
+const Auth_1 = __importDefault(require("./Middlewares/Auth"));
+const Enums_1 = require("./Engine/Utils/Enums");
+new Server_1.default([
+    Container_1.container.get(Types_1.types.TokenRouter),
+    Container_1.container.get(Types_1.types.RedisRouter),
+    Container_1.container.get(Types_1.types.RabbitMQRouter),
+], [new Auth_1.default(Enums_1.MiddlewareOrder.Begin)]).start(process.env.PORT);
+// const client = new elasticsearch.Client({
+//   host: config.env.SEARCHBOX_URL,
+// });
+// client
+//   .search({
+//     index: 'teste',
+//     type: 'document',
+//     body: {
+//       query: {
+//         query_string: {
+//           query: 'lsi',
+//         },
+//       },
+//     },
+//   })
+//   .then((x) => {
+//     console.log(x.hits);
+//   })
+//   .catch((x) => {
+//     console.log('err', x);
+//   });
 // client.index(
 //   {
 //     index: 'teste',
@@ -50,11 +58,3 @@ client
 //   console.log('moment().utc()', moment().utc());
 // });
 // cronJob.start();
-// new Server(
-//   [
-//     //container.get<RedisRouter>(types.RedisRouter),
-//     container.get<TokenRouter>(types.TokenRouter),
-//     container.get<RabbitMQRouter>(types.RabbitMQRouter),
-//   ],
-//   [/*new AuthMiddleware(MiddlewareOrder.Begin)*/],
-// ).start(process.env.PORT);
